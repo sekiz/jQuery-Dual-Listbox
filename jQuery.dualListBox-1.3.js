@@ -53,14 +53,14 @@
 *
 */
 
-(function($) {
+(function ($) {
     var settings = new Array();
     var group1 = new Array();
     var group2 = new Array();
     var onSort = new Array();
 
     //the main method that the end user will execute to setup the DLB
-    $.configureBoxes = function(options) {
+    $.configureBoxes = function (options) {
         //define default settings
         var index = settings.push({
             box1View: 'box1View',
@@ -110,7 +110,7 @@
 
         //define sort function
         if (settings[index].sortBy == 'text') {
-            onSort.push(function(a, b) {
+            onSort.push(function (a, b) {
                 var aVal = a.text.toLowerCase();
                 var bVal = b.text.toLowerCase();
                 if (aVal < bVal) { return -1; }
@@ -118,7 +118,7 @@
                 return 0;
             });
         } else {
-            onSort.push(function(a, b) {
+            onSort.push(function (a, b) {
                 var aVal = a.value.toLowerCase();
                 var bVal = b.value.toLowerCase();
                 if (aVal < bVal) { return -1; }
@@ -129,47 +129,47 @@
 
         //configure events
         if (settings[index].useFilters) {
-            $('#' + group1[index].filter).keyup(function() {
+            $('#' + group1[index].filter).keyup(function () {
                 Filter(group1[index]);
             });
-            $('#' + group2[index].filter).keyup(function() {
+            $('#' + group2[index].filter).keyup(function () {
                 Filter(group2[index]);
             });
-            $('#' + group1[index].clear).click(function() {
+            $('#' + group1[index].clear).click(function () {
                 ClearFilter(group1[index]);
             });
-            $('#' + group2[index].clear).click(function() {
+            $('#' + group2[index].clear).click(function () {
                 ClearFilter(group2[index]);
             });
         }
         if (IsMoveMode(settings[index])) {
-            $('#' + group2[index].view).dblclick(function() {
+            $('#' + group2[index].view).dblclick(function () {
                 MoveSelected(group2[index], group1[index]);
             });
-            $('#' + settings[index].to1).click(function() {
+            $('#' + settings[index].to1).click(function () {
                 MoveSelected(group2[index], group1[index]);
             });
-            $('#' + settings[index].allTo1).click(function() {
+            $('#' + settings[index].allTo1).click(function () {
                 MoveAll(group2[index], group1[index]);
             });
         } else {
-            $('#' + group2[index].view).dblclick(function() {
+            $('#' + group2[index].view).dblclick(function () {
                 RemoveSelected(group2[index], group1[index]);
             });
-            $('#' + settings[index].to1).click(function() {
+            $('#' + settings[index].to1).click(function () {
                 RemoveSelected(group2[index], group1[index]);
             });
-            $('#' + settings[index].allTo1).click(function() {
+            $('#' + settings[index].allTo1).click(function () {
                 RemoveAll(group2[index], group1[index]);
             });
         }
-        $('#' + group1[index].view).dblclick(function() {
+        $('#' + group1[index].view).dblclick(function () {
             MoveSelected(group1[index], group2[index]);
         });
-        $('#' + settings[index].to2).click(function() {
+        $('#' + settings[index].to2).click(function () {
             MoveSelected(group1[index], group2[index]);
         });
-        $('#' + settings[index].allTo2).click(function() {
+        $('#' + settings[index].allTo2).click(function () {
             MoveAll(group1[index], group2[index]);
         });
 
@@ -190,7 +190,7 @@
 
         //attach onSubmit functionality if desired
         if (settings[index].selectOnSubmit) {
-            $('#' + settings[index].box2View).closest('form').submit(function() {
+            $('#' + settings[index].box2View).closest('form').submit(function () {
                 $('#' + settings[index].box2View).children('option').attr('selected', 'selected');
             });
         }
@@ -207,16 +207,19 @@
         var filterLower;
         if (settings[index].useFilters) {
             filterLower = $('#' + group.filter).val().toString().toLowerCase();
+
         } else {
             filterLower = '';
         }
-        $('#' + group.view + ' option').filter(function(i) {
+        $('#' + group.view + ' option').filter(function (i) {
             var toMatch = $(this).text().toString().toLowerCase();
-            return toMatch.indexOf(filterLower) == -1;
+            var toMatch2 = $(this).text().toString().replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase();
+            return toMatch.indexOf(filterLower) == -1 || toMatch2.indexOf(filterLower) == -1;
         }).appendTo('#' + group.storage);
-        $('#' + group.storage + ' option').filter(function(i) {
+        $('#' + group.storage + ' option').filter(function (i) {
             var toMatch = $(this).text().toString().toLowerCase();
-            return toMatch.indexOf(filterLower) != -1;
+            var toMatch2 = $(this).text().toString().replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase();
+            return toMatch.indexOf(filterLower) != -1 || toMatch2.indexOf(filterLower) != -1;
         }).appendTo('#' + group.view);
         try {
             $('#' + group.view + ' option').removeAttr('selected');
